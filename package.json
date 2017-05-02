@@ -1,0 +1,17 @@
+{
+    "name": "iantsch/mu-multihost",
+    "type": "wordpress-muplugin",
+    "description": "WordPress must-use plugin to access the same instance on multiple domains",
+    "keywords": ["wordpress","plugins"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Christian Tschugg",
+            "email": "iantsch@gmail.com",
+            "homepage": "http://mbt.wien"
+        }
+    ],
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}
