@@ -216,34 +216,21 @@ namespace MBT {
             <style>
                 .host {
                     display: flex;
+                    align-items: center;
                 }
             </style>
             <div class="hosts">
                 <?php if ($options):
-                    foreach ($options[$args['label_for']] as $i => $option):?>
-                        <div class="host">
-                            <input type="text" name="mu-multihost[<?php echo esc_attr( $args['label_for'] ); ?>][<?php echo $i; ?>][domain]" placeholder="<?php _e('Domain','mbt');?>" value="<?php echo $option['domain'];?>">
-                            <input type="text" name="mu-multihost[<?php echo esc_attr( $args['label_for'] ); ?>][<?php echo $i; ?>][theme]" placeholder="<?php _e('Theme','mbt');?>" value="<?php echo $option['theme'];?>">
-                            <input type="text" name="mu-multihost[<?php echo esc_attr( $args['label_for'] ); ?>][<?php echo $i; ?>][front_page]" placeholder="<?php _e('Front Page','mbt');?>" value="<?php echo $option['front_page'];?>">
-                            <button class="button" data-mbt="remove-host">
-                                <?php _e('&times;');?>
-                            </button>
-                        </div>
-                    <?php endforeach;
+                    foreach ($options[$args['label_for']] as $i => $option){
+                        echo $this->getHost($i, $option);
+                    }
                 endif;?>
             </div>
             <button class="button" data-mbt="add-host">
                 <?php _e('Add Host');?>
             </button>
             <script type="text/html" id="mbt-template-host">
-                <div class="host">
-                    <input type="text" name="mu-multihost[<?php echo esc_attr( $args['label_for'] ); ?>][###][domain]" placeholder="<?php _e('Domain','mbt');?>">
-                    <input type="text" name="mu-multihost[<?php echo esc_attr( $args['label_for'] ); ?>][###][theme]" placeholder="<?php _e('Theme','mbt');?>">
-                    <input type="text" name="mu-multihost[<?php echo esc_attr( $args['label_for'] ); ?>][###][front_page]" placeholder="<?php _e('Front Page','mbt');?>">
-                    <button class="button" data-mbt="remove-host">
-                        <?php _e('&times;');?>
-                    </button>
-                </div>
+                <?php echo $this->getHost();?>
             </script>
             <script>
                 (function($) {
@@ -251,15 +238,48 @@ namespace MBT {
                         e.preventDefault();
                         var $hosts = $(this).prev(),
                             template = $('#mbt-template-host').text();
-                        console.log($hosts, template);
                         $hosts.append($(template.split('###').join($hosts.children().length)));
                     }).on('click', "[data-mbt='remove-host']", function(e) {
                         e.preventDefault();
+                        var $hosts = $(this).closest('.hosts').children(),
+                            length = $hosts.length,
+                            toRemove = $hosts.index($(this).parent()),
+                            modifyOthers = false;
+                        if ((length - 1) > toRemove) {
+                            modifyOthers = true;
+                        }
+                        if (modifyOthers) {
+                            for(++toRemove; toRemove < length; ++toRemove) {
+                                $hosts.eq(toRemove).find('[name]').each(function() {
+                                    $(this).attr('name', $(this).attr('name').split('['+toRemove+']').join('['+(toRemove - 1)+']'));
+                                })
+                            }
+                        }
                         $(this).parent().remove();
                     });
                 })( jQuery );
             </script>
             <?php
+        }
+
+        private function getHost($index = '###', $row = ['domain' => '', 'theme'=>'', 'front_page'=>'']) {
+            $html = '<div class="host">';
+            $html .= '<input type="text" name="mu-multihost[host]['.$index.'][domain]" placeholder="'.__('Domain','mbt').'" value="'.$row['domain'].'">';
+            $html .= '<select  name="mu-multihost[host]['.$index.'][theme]">';
+            foreach($this->getAvailableThemes() as $theme) {
+                $html .= '<option value="'.$theme.'" '.selected($theme, $row['theme'], false).'>'.$theme.'</option>';
+            }
+            $html .= '</select>';
+            $html .= '<input type="text" name="mu-multihost[host]['.$index.'][front_page]" placeholder="'.__('Front Page','mbt').'" value="'.$row['front_page'].'">';
+            $html .= '<button class="button" data-mbt="remove-host">';
+            $html .= __('&times;');
+            $html .= '</button>';
+            $html .= '</div>';
+            return $html;
+        }
+
+        private function getAvailableThemes() {
+            return array_keys(wp_get_themes());
         }
 
         public function registerMenu() {
