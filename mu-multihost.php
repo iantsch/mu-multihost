@@ -57,7 +57,7 @@ namespace MBT {
          */
         private function registerDomains() {
             $domains = maybe_unserialize(get_option('mu-multihost', ''));
-            if ($domains) {
+            if ($domains && is_array($domains) && array_key_exists('hosts', $domains)) {
                 foreach ($domains['hosts'] as $domain) {
                     $this->addDomain($domain['domain'], $domain['theme'], $domain['front_page']);
                 }
@@ -264,13 +264,13 @@ namespace MBT {
 
         private function getHost($index = '###', $row = ['domain' => '', 'theme'=>'', 'front_page'=>'']) {
             $html = '<div class="host">';
-            $html .= '<input type="text" name="mu-multihost[host]['.$index.'][domain]" placeholder="'.__('Domain','mbt').'" value="'.$row['domain'].'">';
-            $html .= '<select  name="mu-multihost[host]['.$index.'][theme]">';
+            $html .= '<input type="text" name="mu-multihost[hosts]['.$index.'][domain]" placeholder="'.__('Domain','mbt').'" value="'.$row['domain'].'">';
+            $html .= '<select  name="mu-multihost[hosts]['.$index.'][theme]">';
             foreach($this->getAvailableThemes() as $theme) {
                 $html .= '<option value="'.$theme.'" '.selected($theme, $row['theme'], false).'>'.$theme.'</option>';
             }
             $html .= '</select>';
-            $html .= '<input type="text" name="mu-multihost[host]['.$index.'][front_page]" placeholder="'.__('Front Page','mbt').'" value="'.$row['front_page'].'">';
+            $html .= '<input type="number" min="1" step"1" name="mu-multihost[hosts]['.$index.'][front_page]" placeholder="'.__('Front Page','mbt').'" value="'.((int) $row['front_page']).'">';
             $html .= '<button class="button" data-mbt="remove-host">';
             $html .= __('&times;');
             $html .= '</button>';
@@ -289,10 +289,6 @@ namespace MBT {
         public function renderSettingsPage() {
             if ( ! current_user_can( 'manage_options' ) ) {
                 return;
-            }
-
-            if ( isset( $_GET['settings-updated'] ) ) {
-                add_settings_error( 'mbt_messages', 'mbt_message', __( 'Hosts saved', 'mbt' ), 'updated' );
             }
             settings_errors( 'mbt_messages' );
             ?>

@@ -1,7 +1,7 @@
 {
     "name": "iantsch/mu-multihost",
     "type": "wordpress-muplugin",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "WordPress must-use plugin to access the same instance on multiple domains with optional theme switch and front page switch.",
     "keywords": ["wordpress","plugins"],
     "license": "MIT",
