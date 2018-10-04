@@ -15,6 +15,7 @@ $ php composer require iantsch/mu-multihost
 
 ### Via Download
 
-Download/fork this repository and copy the contents of this must-use plugin into `wp-content/mu-plugins/`.
-If you visit your Plugin section in the `wp-admin` area, you should be able to see a newly created category (Must use) plugins
+1. Click on the `Download ZIP` button at the right to download the plugin.
+2. Upload the entire `wpac-like-system` folder to the `/wp-content/plugins/` directory.
+3. Activate the plugin through the `Plugins` menu in WordPress.
 
