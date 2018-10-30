@@ -20,4 +20,4 @@ $ php composer require iantsch/mu-multihost
 3. Activate the plugin through the `Plugins` menu in WordPress.
 
 ## Credits
-[@iantsch](https://twitter.com/iantsch) - [web developer](https://mbt.wien) behind this and other project.
+[@iantsch](https://twitter.com/iantsch) - [web developer](https://mbt.wien) behind this and other projects.
